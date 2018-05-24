@@ -1,12 +1,18 @@
-const http = require('http')
+const express = require('express')
+const bodyParser = require('body-parser')
+const quoteRouter = require('./routes.js')
+const app = express()
 
 const port = 3000
 
-const requestHandler = function(req, res) {
-    console.log(`New request to ${req.url}`)
-    res.end('Welcome')
-}
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(express.static('public'))
+app.use('/quotes', quoteRouter)
+app.get('/', (req, res) => {
+    res.sendStatus(404)
+})
 
-const server = http.createServer(requestHandler)
-
-server.listen(port, () => { console.log(`Listening on port ${port}`)})
+app.listen(port, () => {
+    console.log(`Listening on port ${port}`)
+})
